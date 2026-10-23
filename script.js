@@ -110,5 +110,12 @@
   document.querySelectorAll('[data-question]').forEach(button=>button.addEventListener('click',()=>{const answer=answers[button.dataset.question];document.querySelectorAll('[data-question]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));document.querySelector('#knowledgeAnswer').textContent=answer.text;document.querySelector('#knowledgeSource').textContent=answer.source;}));
   document.querySelector('#year').textContent=new Date().getFullYear();
   const form=document.querySelector('#contactForm');
+  const inquiry=new URLSearchParams(location.search);
+  const requestedProject=inquiry.get('project');
+  const projectSelect=form.querySelector('[name="project_type"]');
+  if([...projectSelect.options].some(option=>option.value===requestedProject))projectSelect.value=requestedProject;
+  const interest=(inquiry.get('interest')||'').slice(0,100);
+  if(interest){const context=document.querySelector('#inquiryContext');context.textContent='Your brief / '+interest;context.hidden=false;const field=document.createElement('input');field.type='hidden';field.name='interest';field.value=interest;form.append(field);}
+
   form.addEventListener('submit',async event=>{event.preventDefault();const button=form.querySelector('[type="submit"]'),status=document.querySelector('#formStatus');button.disabled=true;status.textContent='Sending your brief…';try{const response=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});if(!response.ok)throw new Error('Submission failed');status.textContent='Thank you. Your project brief has been sent.';form.reset();}catch{status.textContent='Your brief could not be sent. Please email info@fw1ai.com directly.';}finally{button.disabled=false;}});
 })();
