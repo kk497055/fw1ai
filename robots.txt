@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://fw1ai.com/sitemap.xml
